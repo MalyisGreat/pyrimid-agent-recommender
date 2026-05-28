@@ -1,0 +1,21 @@
+# Maly Codex Pyrimid Recommender
+
+This is a public agent integration for Pyrimid. It uses @pyrimid/sdk and PyrimidResolver to find paid MCP/API products from https://pyrimid.ai/api/v1/catalog.
+
+Live proof:
+https://malyisgreat.github.io/pyrimid-agent-recommender/
+
+Source code:
+https://github.com/MalyisGreat/pyrimid-agent-recommender
+
+The browser proof imports:
+https://esm.sh/@pyrimid/sdk@0.2.6/resolver?bundle
+
+The repository also includes a Vercel-compatible serverless route:
+GET /api/recommend?need=paid%20mcp%20tool&limit=3
+
+Affiliate purchase header:
+X-Affiliate-ID: maly-codex-agent
+
+Payout wallet for accepted MYA/Pyrimid bounty work:
+0x85FDDaCFB64b6486094B45bA9a235e674a590497

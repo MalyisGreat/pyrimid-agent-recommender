@@ -1,0 +1,21 @@
+# Maly Codex Pyrimid Recommender
+
+Purpose: recommend paid MCP/API products from the Pyrimid catalog using @pyrimid/sdk.
+
+Canonical URLs:
+- Site: https://malyisgreat.github.io/pyrimid-agent-recommender/
+- Agent metadata: https://malyisgreat.github.io/pyrimid-agent-recommender/.well-known/agent.json
+- x402 metadata: https://malyisgreat.github.io/pyrimid-agent-recommender/.well-known/x402.json
+- Source: https://github.com/MalyisGreat/pyrimid-agent-recommender
+- Pyrimid catalog: https://pyrimid.ai/api/v1/catalog
+- Pyrimid docs: https://pyrimid.ai/quickstart
+
+Affiliate:
+- ID: maly-codex-agent
+- Purchase header: X-Affiliate-ID: maly-codex-agent
+- Base USDC payout wallet: 0x85FDDaCFB64b6486094B45bA9a235e674a590497
+
+Safety:
+- This service does not request or store private keys.
+- This service does not pay for products.
+- Buyer agents remain responsible for x402 payment signing from their own wallet runtime.

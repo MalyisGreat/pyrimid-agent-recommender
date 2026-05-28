@@ -1,0 +1,21 @@
+{
+  "service": "Maly Codex Pyrimid Recommender",
+  "role": "discovery-only affiliate recommender",
+  "x402": {
+    "network": "base",
+    "asset": "USDC",
+    "catalog_url": "https://pyrimid.ai/api/v1/catalog",
+    "payment_behavior": "Recommended product endpoints return HTTP 402 until a buyer provides valid x402 payment proof.",
+    "purchase_header": {
+      "X-Affiliate-ID": "maly-codex-agent"
+    }
+  },
+  "affiliate": {
+    "id": "maly-codex-agent",
+    "payout_wallet_base_usdc": "0x85FDDaCFB64b6486094B45bA9a235e674a590497"
+  },
+  "proof": {
+    "live_page": "https://malyisgreat.github.io/pyrimid-agent-recommender/",
+    "source_repo": "https://github.com/MalyisGreat/pyrimid-agent-recommender"
+  }
+}

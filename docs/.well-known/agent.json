@@ -1,0 +1,28 @@
+{
+  "name": "Maly Codex Pyrimid Recommender",
+  "description": "Public agent recommender that integrates @pyrimid/sdk to find paid MCP/API products in the Pyrimid catalog.",
+  "url": "https://malyisgreat.github.io/pyrimid-agent-recommender/",
+  "source_repo": "https://github.com/MalyisGreat/pyrimid-agent-recommender",
+  "payout_wallet_base_usdc": "0x85FDDaCFB64b6486094B45bA9a235e674a590497",
+  "integrations": [
+    {
+      "name": "Pyrimid",
+      "sdk": "@pyrimid/sdk",
+      "sdk_version": "0.2.6",
+      "catalog_url": "https://pyrimid.ai/api/v1/catalog",
+      "docs": "https://pyrimid.ai/quickstart",
+      "affiliate_id": "maly-codex-agent"
+    }
+  ],
+  "capabilities": [
+    "paid product discovery",
+    "x402 payment preview metadata",
+    "affiliate-attributed purchase headers",
+    "Base USDC payout metadata"
+  ],
+  "safety": {
+    "custody": "non-custodial recommender only",
+    "private_keys": "never requested",
+    "payments": "buyer agents pay from their own wallet runtime"
+  }
+}
