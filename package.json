@@ -1,0 +1,17 @@
+{
+  "name": "pyrimid-agent-recommender",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Public agent endpoint that integrates @pyrimid/sdk to recommend paid MCP/API products with affiliate attribution.",
+  "scripts": {
+    "start": "vercel dev",
+    "check": "node scripts/smoke.mjs"
+  },
+  "dependencies": {
+    "@pyrimid/sdk": "0.2.6"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

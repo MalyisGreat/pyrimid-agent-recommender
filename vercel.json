@@ -1,0 +1,25 @@
+{
+  "version": 2,
+  "rewrites": [
+    {
+      "source": "/.well-known/agent.json",
+      "destination": "/api/agent"
+    },
+    {
+      "source": "/.well-known/x402.json",
+      "destination": "/api/x402"
+    },
+    {
+      "source": "/manifest",
+      "destination": "/api/manifest"
+    },
+    {
+      "source": "/agents.txt",
+      "destination": "/api/agents"
+    },
+    {
+      "source": "/llms.txt",
+      "destination": "/api/llms"
+    }
+  ]
+}
