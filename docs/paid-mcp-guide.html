@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sell a Paid MCP or API Tool with x402 and Pyrimid</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: #f7faf9;
+        color: #16221e;
+      }
+      main {
+        max-width: 880px;
+        margin: 0 auto;
+        padding: 42px 20px;
+      }
+      h1 {
+        margin: 0 0 14px;
+        font-size: 34px;
+        line-height: 1.15;
+      }
+      h2 {
+        margin-top: 34px;
+      }
+      p, li {
+        font-size: 16px;
+        line-height: 1.65;
+      }
+      a {
+        color: #006b4f;
+      }
+      code {
+        background: #e7f2ef;
+        border-radius: 4px;
+        padding: 2px 5px;
+      }
+      pre {
+        overflow-x: auto;
+        background: #11231d;
+        color: #eaf9f3;
+        border-radius: 8px;
+        padding: 14px;
+        line-height: 1.45;
+      }
+      .note {
+        border-left: 4px solid #007a5c;
+        padding: 10px 14px;
+        background: #edf7f3;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Sell a Paid MCP or API Tool with x402 and Pyrimid</h1>
+      <p>
+        This guide shows the smallest reproducible pattern for turning a tool endpoint into an
+        agent-payable product: publish catalog metadata, return an HTTP 402 payment requirement,
+        let the buyer pay in Base USDC through Pyrimid, then return the paid result.
+      </p>
+
+      <div class="note">
+        Live references: <a href="https://pyrimid.ai/quickstart">Pyrimid quickstart</a>,
+        <a href="https://pyrimid.ai/api/v1/catalog?query=agentzone&amp;limit=3">catalog example</a>,
+        and a real 402 endpoint:
+        <code>https://pyrimid.ai/api/v1/paid/agentzone-search?q=agent-commerce</code>.
+      </div>
+
+      <h2>1. Start with a useful paid result</h2>
+      <p>
+        Pick a result that is worth paying for because it costs you data, model calls, scraping,
+        compliance work, enrichment, or specialized expertise. In the live example below, the
+        product is <code>agentzone-trust-search</code>, a paid agent reputation search.
+      </p>
+
+      <h2>2. Publish catalog metadata</h2>
+      <p>
+        Buyer agents need machine-readable metadata before they can decide to pay. This is the
+        relevant live catalog entry shape from Pyrimid:
+      </p>
+      <pre>{
+  "vendor_id": "agentzone",
+  "vendor_name": "AgentZone",
+  "product_id": "agentzone-trust-search",
+  "description": "Paid trusted-agent search over AgentZone identity, reputation, and x402 discovery data.",
+  "category": "agent-discovery",
+  "tags": ["agentzone", "agent-search", "erc8004", "reputation", "x402", "base"],
+  "price_usdc": 50000,
+  "price_display": "$0.05",
+  "affiliate_bps": 2500,
+  "endpoint": "https://pyrimid.ai/api/v1/paid/agentzone-search?q=agent-commerce",
+  "method": "GET",
+  "network": "base",
+  "asset": "USDC",
+  "source": "pyrimid-seed",
+  "sdk_integrated": true
+}</pre>
+
+      <h2>3. Return HTTP 402 before payment</h2>
+      <p>
+        A buyer can probe the endpoint without paying. The unpaid request returns a standard
+        payment-required response instead of leaking the paid result:
+      </p>
+      <pre>curl -i 'https://pyrimid.ai/api/v1/paid/agentzone-search?q=agent-commerce'</pre>
+      <p>Observed response:</p>
+      <pre>HTTP/2 402
+x-pyrimid-network: base
+x-pyrimid-product: agentzone-trust-search
+x-pyrimid-vendor: agentzone
+content-type: application/json
+
+{
+  "error": "payment_required",
+  "message": "Pay 0.05 USDC on Base through Pyrimid, then retry with X-PAYMENT or X-PAYMENT-TX.",
+  "accepts": [
+    {
+      "x402Version": 2,
+      "scheme": "exact",
+      "network": "base",
+      "asset": "USDC",
+      "maxAmountRequired": "0.05",
+      "payTo": "0xc949AEa380D7b7984806143ddbfE519B03ABd68B",
+      "resource": "https://pyrimid.ai/api/v1/paid/agentzone-search?q=agent-commerce",
+      "description": "AgentZone trusted agent search routed through Pyrimid",
+      "mimeType": "application/json",
+      "vendorId": "agentzone",
+      "productId": "agentzone-trust-search",
+      "affiliateBps": 2500,
+      "protocol": "pyrimid"
+    }
+  ],
+  "docs": "https://pyrimid.ai/quickstart"
+}</pre>
+
+      <h2>4. Add affiliate-aware discovery</h2>
+      <p>
+        Agent recommenders can route buyers to your product and attach an affiliate ID. The
+        companion proof service for this guide uses <code>@pyrimid/sdk@0.2.6</code> and
+        <code>PyrimidResolver</code> to recommend products:
+      </p>
+      <pre>import {PyrimidResolver} from '@pyrimid/sdk/resolver';
+
+const resolver = new PyrimidResolver({
+  affiliateId: 'maly-codex-agent',
+  catalogUrl: 'https://pyrimid.ai/api/v1/catalog',
+  preferVerifiedVendors: true,
+  maxPriceUsdc: 10_000_000
+});
+
+const products = await resolver.findProducts('paid mcp tool', 3);</pre>
+
+      <p>
+        Buyers that choose a recommendation should include this header when probing or paying:
+      </p>
+      <pre>X-Affiliate-ID: maly-codex-agent</pre>
+
+      <h2>5. Reproduce without spending funds</h2>
+      <ol>
+        <li>Open the <a href="./">live recommender proof</a>.</li>
+        <li>Confirm it recommends products from the live Pyrimid catalog.</li>
+        <li>Fetch <a href="./.well-known/agent.json">agent.json</a> and <a href="./.well-known/x402.json">x402.json</a>.</li>
+        <li>Run the 402 probe above and confirm it returns the payment requirement.</li>
+      </ol>
+
+      <h2>6. What a vendor ships</h2>
+      <ul>
+        <li>A paid endpoint that returns HTTP 402 until payment proof is supplied.</li>
+        <li>Catalog metadata with product ID, endpoint, price, network, asset, and output schema.</li>
+        <li>Clear docs that tell buyer agents how to retry with <code>X-PAYMENT</code> or <code>X-PAYMENT-TX</code>.</li>
+        <li>Affiliate handling through <code>X-Affiliate-ID</code> so distributors can earn routing commission.</li>
+      </ul>
+
+      <p>
+        Source for the proof service:
+        <a href="https://github.com/MalyisGreat/pyrimid-agent-recommender">github.com/MalyisGreat/pyrimid-agent-recommender</a>.
+      </p>
+    </main>
+  </body>
+</html>
